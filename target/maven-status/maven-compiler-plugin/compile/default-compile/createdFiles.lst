@@ -1,0 +1,5 @@
+ovgu\ir\lucene_web_crawler\IndexFiles.class
+ovgu\ir\lucene_web_crawler\UrlNormalizer.class
+ovgu\ir\lucene_web_crawler\SearchFiles.class
+ovgu\ir\lucene_web_crawler\Crawler.class
+ovgu\ir\lucene_web_crawler\Main.class
