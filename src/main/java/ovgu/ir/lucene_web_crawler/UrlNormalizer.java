@@ -4,8 +4,8 @@ public class UrlNormalizer {
 
 	public static String normalize(String url) {
 		
-		if ( !(url.startsWith("www") || url.startsWith("http")) ) {
-			System.out.print("Invalid Url: " + url);
+		if ( !(url.startsWith("www") || url.startsWith("http")) || url == "") {
+			//System.out.println("Invalid Url: " + url);
 			return null;
 		}
 		

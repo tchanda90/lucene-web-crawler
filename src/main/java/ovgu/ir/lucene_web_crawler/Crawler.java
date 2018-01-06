@@ -36,8 +36,7 @@ public class Crawler {
 		try {
 			bfWriter = new BufferedWriter(new FileWriter(indexPath + "/pages.txt"));
 		} catch (IOException e) {
-			System.out.println("Exception while creaing pages.txt");
-			e.printStackTrace();
+			System.out.println("Exception while creaing pages.txt. " + e);
 		}
 		
 		// initialize a HashSet to store pages that get indexed, so that
@@ -53,8 +52,7 @@ public class Crawler {
 			writer.close();
 			bfWriter.close();
 		} catch (IOException e) {
-			System.out.println("Exception while closing index writer or buffered writer");
-			e.printStackTrace();
+			System.out.println("Exception while closing index writer or buffered writer. " + e);
 		}	
 	}
 
@@ -68,25 +66,25 @@ public class Crawler {
 		// parse the document using jsoup
 		org.jsoup.nodes.Document doc = null;	
 		try {
-			Connection con = Jsoup.connect(url).ignoreContentType(true).userAgent("Mozilla/17.0").timeout(10000);
+			Connection con = Jsoup.connect(url)
+					.userAgent("Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:25.0) Gecko/20100101 Firefox/25.0")
+					.ignoreHttpErrors(true)
+					.timeout(20000);
 			Connection.Response response = con.execute();
 			if (response.statusCode() == 200) {
 	            doc = con.get();
-			}
-			else {
-				return;
 			}
 		} catch (HttpStatusException e) {
 			System.out.println("URL could not be parsed. " + e);
 		}
 		catch (Exception e) {
-			System.out.println("Jsoup exception while connecting to url");
-			e.printStackTrace();
+			System.out.println("Jsoup exception while connecting to url: " + url + ". " + e);
 		}
 		
 		if (doc != null) {
 			
 			// index the current doc
+			System.out.println("Adding " + url);
 			IndexFiles.indexDoc(writer, doc);
 			
 			// add the url to the indexedPages HashSet
@@ -99,21 +97,24 @@ public class Crawler {
 				bfWriter.newLine();
 				bfWriter.flush();
 			} catch (IOException e) {
-				e.printStackTrace();
+				System.out.println("Error while writing to pages.txt. " + e);
 			}	
 			
 			
 			// check if crawl depth has been reached
 			if (depth < this.crawlDepth) {
+				
 				// extract links from the url and recurse
 				Elements links = doc.select("a[href]");
+				
 				for (Element link : links) {
-					String normalizedUrl = UrlNormalizer.normalize(link.absUrl("href").toString());
+					String normalizedUrl = UrlNormalizer.normalize(link.absUrl("href").toString());					
 					// recurse on the url if page is not already indexed
-					if (!this.indexedPages.contains(normalizedUrl)) {
+					if (normalizedUrl != null && !this.indexedPages.contains(normalizedUrl)) {
 						crawl(normalizedUrl, depth+1, writer);
 					}
 				}
+			
 			}
 		}	
 	}

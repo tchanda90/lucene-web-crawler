@@ -44,7 +44,7 @@ public class IndexFiles {
 			writer = new IndexWriter(dir, iwc);			
 			
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println("Error initializing index writer. " + e);
 		} 
 		return writer;
 	}
@@ -76,16 +76,11 @@ public class IndexFiles {
 			Field urlField = new TextField("url", url, Field.Store.YES);
 			document.add(urlField);
 		
-
 			// index the document
-			System.out.println("Adding " + UrlNormalizer.normalize(url));
 			writer.addDocument(document);
 			
-			
-			
 		} catch(Exception e) {
-			System.out.println("Error while indexing document " + doc.title());
-			e.printStackTrace();
+			System.out.println("Error while indexing document " + doc.title() + ". " + e);
 		}
 	}
 
