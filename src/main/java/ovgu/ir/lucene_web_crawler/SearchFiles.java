@@ -55,7 +55,7 @@ public class SearchFiles {
 			reader.close();
 			
 		} catch(Exception e) {
-			e.printStackTrace();
+			System.out.println("Error while initializing index reader " + e);
 		}
 				
 	}
